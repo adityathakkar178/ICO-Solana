@@ -38,7 +38,6 @@ fn process_instruction(
     let system_program = next_account_info(accounts_iter)?;
     let token_program = next_account_info(accounts_iter)?;
 
-    msg!("Creating mint account...");
     msg!("Mint: {}", mint_account.key);
     invoke(
         &system_instruction::create_account(
@@ -56,7 +55,6 @@ fn process_instruction(
         ],
     )?;
 
-    msg!("Initializing mint account...");
     msg!("Mint: {}", mint_account.key);
     invoke(
         &token_instruction::initialize_mint(

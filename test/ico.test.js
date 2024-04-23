@@ -36,20 +36,18 @@ describe("Transferring Tokens",  () => {
 
     it("Create an SPL Token!",  async () => {
 
-        
-
         const instructionData = new CreateTokenArgs({
             decimals: 9,
         });
 
         let ix = new TransactionInstruction({
             keys: [
-                { pubkey: tokenMintKeypair.publicKey, isSigner: true, isWritable: true },            // Mint account
-                { pubkey: payer.publicKey, isSigner: false, isWritable: true },                 // Mint authority account
-                { pubkey: payer.publicKey, isSigner: true, isWritable: true },                  // Payer
-                { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },             // Rent account
-                { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },        // System program
-                { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },               // Token program
+                { pubkey: tokenMintKeypair.publicKey, isSigner: true, isWritable: true },            
+                { pubkey: payer.publicKey, isSigner: false, isWritable: true },                 
+                { pubkey: payer.publicKey, isSigner: true, isWritable: true },                  
+                { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },             
+                { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },        
+                { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },               
             ],
             programId: program.publicKey,
             data: instructionData.toBuffer(),
@@ -62,8 +60,8 @@ describe("Transferring Tokens",  () => {
         );
 
         console.log("Success!");
-        console.log(`   Mint Address: ${tokenMintKeypair.publicKey}`);
-        console.log(`   Tx Signature: ${sx}`);
+        console.log(`Mint Address: ${tokenMintKeypair.publicKey}`);
+        console.log(`Tx Signature: ${sx}`);
     });
 
 
@@ -81,13 +79,13 @@ describe("Transferring Tokens",  () => {
 
         let ix = new TransactionInstruction({
             keys: [
-                { pubkey: tokenMintKeypair.publicKey, isSigner: false, isWritable: true },           // Mint account
-                { pubkey: payer.publicKey, isSigner: false, isWritable: true },                 // Mint authority account
-                { pubkey: associatedTokenAccountAddress, isSigner: false, isWritable: true },   // ATA
-                { pubkey: payer.publicKey, isSigner: true, isWritable: true },                  // Payer
-                { pubkey: SystemProgram.programId, isSigner: false, isWritable: true },                  // System program
-                { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },               // Token program
-                { pubkey: ASSOCIATED_TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },    // Token metadata program
+                { pubkey: tokenMintKeypair.publicKey, isSigner: false, isWritable: true },           
+                { pubkey: payer.publicKey, isSigner: false, isWritable: true },                 
+                { pubkey: associatedTokenAccountAddress, isSigner: false, isWritable: true },   
+                { pubkey: payer.publicKey, isSigner: true, isWritable: true },                  
+                { pubkey: SystemProgram.programId, isSigner: false, isWritable: true },                  
+                { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },               
+                { pubkey: ASSOCIATED_TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },    
             ],
             programId: program.publicKey,
             data: instructionData.toBuffer(),
@@ -101,21 +99,21 @@ describe("Transferring Tokens",  () => {
         );
 
         console.log("Success!");
-        console.log(`   ATA Address: ${associatedTokenAccountAddress}`);
-        console.log(`   Tx Signature: ${sx}`);
+        console.log(`ATA Address: ${associatedTokenAccountAddress}`);
+        console.log(`Tx Signature: ${sx}`);
     });
 
 
-    it("Prep a new test wallet for transfers", async () => {
+    // it("Prep a new test wallet for transfers", async () => {
 
-        await connection.confirmTransaction(
-            await connection.requestAirdrop(
-                recipientWallet.publicKey,
-                await connection.getMinimumBalanceForRentExemption(0),
-            )
-        );
-        console.log(`Recipient Pubkey: ${recipientWallet.publicKey}`);
-    });
+    //     await connection.confirmTransaction(
+    //         await connection.requestAirdrop(
+    //             recipientWallet.publicKey,
+    //             await connection.getMinimumBalanceForRentExemption(0),
+    //         )
+    //     );
+    //     console.log(`Recipient Pubkey: ${recipientWallet.publicKey}`);
+    // });
 
     it("Transfer tokens to another wallet!", async () => {
 
@@ -137,15 +135,15 @@ describe("Transferring Tokens",  () => {
 
         let ix = new TransactionInstruction({
             keys: [
-                { pubkey: tokenMintKeypair.publicKey, isSigner: false, isWritable: true },      // Mint account
-                { pubkey: fromAssociatedTokenAddress, isSigner: false, isWritable: true },      // Owner Token account
-                { pubkey: toAssociatedTokenAddress, isSigner: false, isWritable: true },        // Recipient Token account
-                { pubkey: payer.publicKey, isSigner: true, isWritable: true },                  // Owner
-                { pubkey: recipientWallet.publicKey, isSigner: true, isWritable: true },        // Recipient
-                { pubkey: payer.publicKey, isSigner: true, isWritable: true },                  // Payer
-                { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },        // System program
-                { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },               // Token program
-                { pubkey: ASSOCIATED_TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },    // Associated token program
+                { pubkey: tokenMintKeypair.publicKey, isSigner: false, isWritable: true },      
+                { pubkey: fromAssociatedTokenAddress, isSigner: false, isWritable: true },      
+                { pubkey: toAssociatedTokenAddress, isSigner: false, isWritable: true },        
+                { pubkey: payer.publicKey, isSigner: true, isWritable: true },                  
+                { pubkey: recipientWallet.publicKey, isSigner: true, isWritable: true },        
+                { pubkey: payer.publicKey, isSigner: true, isWritable: true },                  
+                { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },        
+                { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },               
+                { pubkey: ASSOCIATED_TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },   
             ],
             programId: program.publicKey,
             data: transferToInstructionData.toBuffer(),

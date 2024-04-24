@@ -1,4 +1,4 @@
-const borsh = require("borsh");
+const borsh = require('borsh');
 
 class Assignable {
     constructor(properties) {
@@ -21,15 +21,16 @@ class CreateTokenArgs extends Assignable {
 }
 const CreateTokenArgsSchema = new Map([
     [
-        CreateTokenArgs, {
+        CreateTokenArgs,
+        {
             kind: 'struct',
             fields: [
+                ['instruction', 'u8'],
                 ['decimals', 'u8'],
-            ]
-        }
-    ]
+            ],
+        },
+    ],
 ]);
-
 
 class MintSplArgs extends Assignable {
     toBuffer() {
@@ -38,14 +39,15 @@ class MintSplArgs extends Assignable {
 }
 const MintSplArgsSchema = new Map([
     [
-        MintSplArgs, {
+        MintSplArgs,
+        {
             kind: 'struct',
             fields: [
                 ['instruction', 'u8'],
                 ['quantity', 'u64'],
-            ]
-        }
-    ]
+            ],
+        },
+    ],
 ]);
 
 class TransferTokensArgs extends Assignable {
@@ -55,19 +57,20 @@ class TransferTokensArgs extends Assignable {
 }
 const TransferTokensArgsSchema = new Map([
     [
-        TransferTokensArgs, {
+        TransferTokensArgs,
+        {
             kind: 'struct',
             fields: [
                 ['instruction', 'u8'],
                 ['quantity', 'u64'],
-            ]
-        }
-    ]
+            ],
+        },
+    ],
 ]);
 
 module.exports = {
     MyInstruction,
     CreateTokenArgs,
     MintSplArgs,
-    TransferTokensArgs
+    TransferTokensArgs,
 };

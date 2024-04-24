@@ -15,7 +15,6 @@ use {
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct CreateTokenArgs {
-   
     pub decimals: u8,
 }
 
@@ -68,8 +67,6 @@ pub fn create_token(accounts: &[AccountInfo], args: CreateTokenArgs) -> ProgramR
             rent.clone(),
         ],
     )?;
-
-   
 
     msg!("Token mint created successfully.");
 

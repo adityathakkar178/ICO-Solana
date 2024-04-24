@@ -11,11 +11,11 @@ use {
 };
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
-pub struct TrasnferTokensArgs {
+pub struct TransferTokensArgs {
     pub quantity: u64,
 }
 
-pub fn transfer_tokens(accounts: &[AccountInfo], args: TrasnferTokensArgs) -> ProgramResult {
+pub fn transfer_tokens(accounts: &[AccountInfo], args: TransferTokensArgs) -> ProgramResult {
     let accounts_iter = &mut accounts.iter();
 
     let mint_account = next_account_info(accounts_iter)?;
@@ -28,8 +28,8 @@ pub fn transfer_tokens(accounts: &[AccountInfo], args: TrasnferTokensArgs) -> Pr
     let token_program = next_account_info(accounts_iter)?;
     let associated_token_program = next_account_info(accounts_iter)?;
 
-    if associated_token_program.lamports() == 0 {
-        msg!("Creating associated token account for recipient!!!!");
+    if to_associated_token_account.lamports() == 0 {
+        msg!("Creating associated token account for recipient...");
         invoke(
             &associated_token_account_instruction::create_associated_token_account(
                 payer.key,
@@ -48,18 +48,18 @@ pub fn transfer_tokens(accounts: &[AccountInfo], args: TrasnferTokensArgs) -> Pr
             ],
         )?;
     } else {
-        msg!("Associated token account exists")
+        msg!("Associated token account exists.");
     }
     msg!(
         "Recipient Associated Token Address: {}",
         to_associated_token_account.key
     );
 
-    msg!("Transferring {} tokens", args.quantity);
-    msg!("Mint:{}", mint_account.key);
-    msg!("Owner token address {}", from_associated_token_account.key);
+    msg!("Transferring {} tokens!!!", args.quantity);
+    msg!("Mint: {}", mint_account.key);
+    msg!("Owner Token Address: {}", from_associated_token_account.key);
     msg!(
-        "Recipient token address {}",
+        "Recipient Token Address: {}",
         to_associated_token_account.key
     );
     invoke(
@@ -81,7 +81,7 @@ pub fn transfer_tokens(accounts: &[AccountInfo], args: TrasnferTokensArgs) -> Pr
         ],
     )?;
 
-    msg!("Tokens transfered succesfully");
+    msg!("Tokens transferred successfully.");
 
     Ok(())
 }

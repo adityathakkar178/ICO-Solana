@@ -143,16 +143,6 @@ describe('Transferring Tokens', () => {
         console.log(`Tx Signature: ${sx}`);
     });
 
-    it('Prep a new test wallet for transfers', async () => {
-        await connection.confirmTransaction(
-            await connection.requestAirdrop(
-                recipientWallet.publicKey,
-                await connection.getMinimumBalanceForRentExemption(0)
-            )
-        );
-        console.log(`Recipient Pubkey: ${recipientWallet.publicKey}`);
-    });
-
     it('Transfer tokens to another wallet!', async () => {
         const fromAssociatedTokenAddress = await getAssociatedTokenAddress(
             tokenMintKeypair.publicKey,
@@ -214,12 +204,13 @@ describe('Transferring Tokens', () => {
             data: transferToInstructionData.toBuffer(),
         });
         const ts = new Transaction().add(ix);
-        await sendAndConfirmTransaction(
+        const sx = await sendAndConfirmTransaction(
             connection,
             ts,
             [payer, recipientWallet],
             { skipPreflight: true }
         );
+        console.log(`Tx Signature: ${sx}`);
     });
 });
 

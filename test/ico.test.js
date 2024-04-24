@@ -29,7 +29,7 @@ function createKeypairFromFile(path) {
     );
 }
 
-describe('Transferring Tokens', () => {
+describe('Intitial Coin Offering!', () => {
     const connection = new Connection(
         `https://api.devnet.solana.com/`,
         'confirmed'
@@ -45,7 +45,7 @@ describe('Transferring Tokens', () => {
 
     const recipientWallet = Keypair.generate();
 
-    it('Create an SPL Token!', async () => {
+    it('Create a Token!', async () => {
         const instructionData = new CreateTokenArgs({
             instruction: MyInstruction.Create,
             decimals: 9,
@@ -90,7 +90,7 @@ describe('Transferring Tokens', () => {
         console.log(`Tx Signature: ${sx}`);
     });
 
-    it('Mint some tokens to your wallet!', async () => {
+    it('Mint tokens!', async () => {
         const associatedTokenAccountAddress = await getAssociatedTokenAddress(
             tokenMintKeypair.publicKey,
             payer.publicKey
@@ -143,7 +143,7 @@ describe('Transferring Tokens', () => {
         console.log(`Tx Signature: ${sx}`);
     });
 
-    it('Transfer tokens to another wallet!', async () => {
+    it('Transfer tokens!', async () => {
         const fromAssociatedTokenAddress = await getAssociatedTokenAddress(
             tokenMintKeypair.publicKey,
             payer.publicKey

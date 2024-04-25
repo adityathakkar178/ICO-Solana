@@ -18,6 +18,7 @@ const {
     CreateTokenArgs,
     MintSplArgs,
     TransferTokensArgs,
+    WhiteListArgs,
     MyInstruction,
 } = require('./instruction');
 const { BN } = require('bn.js');
@@ -44,6 +45,8 @@ describe('Intitial Coin Offering!', () => {
     const tokenMintKeypair = Keypair.generate();
 
     const recipientWallet = Keypair.generate();
+
+    const whiteListAccount = Keypair.generate();
 
     it('Create a Token!', async () => {
         const instructionData = new CreateTokenArgs({
@@ -211,6 +214,17 @@ describe('Intitial Coin Offering!', () => {
             { skipPreflight: true }
         );
         console.log(`Tx Signature: ${sx}`);
+    });
+
+    it('Add To Whitelist!', async () => {
+        const instructionData = new WhiteListArgs({
+            instruction: MyInstruction.WhiteList,
+            accounts: whiteListAccount.publicKey,
+            isWhiteList: true,
+        });
+
+        console.log(instructionData);
+        console.log(whiteListAccount.publicKey);
     });
 });
 

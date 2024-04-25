@@ -12,6 +12,7 @@ const MyInstruction = {
     Create: 0,
     MintSpl: 1,
     TransferTokens: 2,
+    WhiteList: 3,
 };
 
 class CreateTokenArgs extends Assignable {
@@ -68,9 +69,30 @@ const TransferTokensArgsSchema = new Map([
     ],
 ]);
 
+class WhiteListArgs extends Assignable {
+    toBuffer() {
+        return Buffer.from(borsh.serialize(WhiteListArgsSchema, this));
+    }
+}
+
+const WhiteListArgsSchema = new Map([
+    [
+        WhiteListArgs,
+        {
+            kind: 'struct',
+            fields: [
+                ['instruction', 'u8'],
+                ['accounts', 'pubkey'],
+                ['isWhiteList', 'bool'],
+            ],
+        },
+    ],
+]);
+
 module.exports = {
     MyInstruction,
     CreateTokenArgs,
     MintSplArgs,
     TransferTokensArgs,
+    WhiteListArgs,
 };

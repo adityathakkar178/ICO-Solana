@@ -1,25 +1,17 @@
 use {
     borsh::{BorshDeserialize, BorshSerialize},
-    solana_program::{
-        account_info::{next_account_info, AccountInfo},
-        entrypoint::ProgramResult,
-        msg,
-        program::invoke, 
-        pubkey::Pubkey,
-    },
-    spl_token::instruction as token_instruction,
+    solana_program::{entrypoint::ProgramResult, msg, pubkey::Pubkey},
 };
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct WhitelistArgs {
-    pub accounts: Pubkey,
-    pub is_whitelisted: bool,
+    pub accounts: Vec<Pubkey>,
+    pub is_whitelist: bool,
 }
 
-pub fn whitelist_account(
-    _args: WhitelistArgs,
-) -> ProgramResult {
-
-
+pub fn whitelist_account(_args: &mut WhitelistArgs, accounts: Pubkey) -> ProgramResult {
+    _args.accounts.push(accounts);
+    _args.is_whitelist = true;
+    msg!("Account has bee added to the whitelist");
     Ok(())
 }

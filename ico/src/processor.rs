@@ -7,6 +7,7 @@ use crate::instructions::{
     create::{create_token, CreateTokenArgs},
     mint::{mint_token, MintSplArgs},
     transfer::{transfer_tokens, TransferTokensArgs},
+    whitelist::{whitelist_account, WhitelistArgs},
 };
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
@@ -14,6 +15,7 @@ enum MyInstruction {
     Create(CreateTokenArgs),
     MintSpl(MintSplArgs),
     TransferTokens(TransferTokensArgs),
+    WhiteListAccount(WhitelistArgs),
 }
 
 pub fn process_instruction(
@@ -27,5 +29,6 @@ pub fn process_instruction(
         MyInstruction::Create(args) => create_token(accounts, args),
         MyInstruction::MintSpl(args) => mint_token(accounts, args),
         MyInstruction::TransferTokens(args) => transfer_tokens(accounts, args),
+        MyInstruction::WhiteListAccount(mut args) => whitelist_account(accounts, &mut args),
     }
 }

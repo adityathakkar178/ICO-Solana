@@ -879,6 +879,8 @@ name = "ico"
 version = "0.1.0"
 dependencies = [
  "borsh 0.9.3",
+ "rs_merkle",
+ "sha2 0.10.8",
  "solana-program",
  "spl-associated-token-account",
  "spl-token",
@@ -1442,6 +1444,15 @@ name = "regex-syntax"
 version = "0.8.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "adad44e29e4c806119491a7f06f03de4d1af22c3a680dd47f1e6e179439d1f56"
+
+[[package]]
+name = "rs_merkle"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "94013fd9a239b0f7f34a2263ef28b826374fe8bf39f302deb9f6b3e6d9d73982"
+dependencies = [
+ "sha2 0.9.9",
+]
 
 [[package]]
 name = "rustc-hash"

@@ -6,6 +6,7 @@ use {
         msg,
         pubkey::Pubkey,
     },
+    rs_merkle::MerkleTree,
 };
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]

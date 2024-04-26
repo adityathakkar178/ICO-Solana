@@ -82,8 +82,7 @@ const WhiteListArgsSchema = new Map([
             kind: 'struct',
             fields: [
                 ['instruction', 'u8'],
-                ['accounts', 'pubkey'],
-                ['isWhiteList', 'bool'],
+                ['accounts', 'u32'],
             ],
         },
     ],

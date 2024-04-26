@@ -1,27 +1,38 @@
 use {
     borsh::{BorshDeserialize, BorshSerialize},
-    solana_program::{
-        account_info::{next_account_info, AccountInfo},
-        entrypoint::ProgramResult,
-        msg,
-        pubkey::Pubkey,
-    },
-    rs_merkle::MerkleTree,
+    merkletreers::tree::MerkleTree,
+    merkletreers::utils::hash_it,
+    solana_program::{entrypoint::ProgramResult, msg, pubkey::Pubkey},
 };
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct WhitelistArgs {
     pub accounts: Vec<Pubkey>,
-    pub is_whitelist: bool,
 }
 
-pub fn whitelist_account(accounts: &[AccountInfo], _args: &mut WhitelistArgs) -> ProgramResult {
-    let accounts_iter = &mut accounts.iter();
+pub struct WhiteListTree {
+    pub tree: MerkleTree,
+}
 
-    let whitelist_account = next_account_info(accounts_iter)?;
+pub fn whitelist_account(_args: &mut WhitelistArgs) -> ProgramResult {
+    let leaves: Vec<[u8; 32]> = _args
+        .accounts
+        .iter()
+        .map(|data| {
+            let pubkey_bytes = data.to_bytes();
+            let mut buffer = [0u8; 32];
+            hash_it(&pubkey_bytes[..], &mut buffer);
+            buffer
+        })
+        .collect();
 
-    _args.accounts.push(*whitelist_account.key);
-    _args.is_whitelist = true;
-    msg!("Account has bee added to the whitelist");
+    let whitelist_tree = MerkleTree::new(leaves);
+    
+    WhiteListTree {
+        tree: whitelist_tree,
+    };
+
+    msg!("Accounts have been added to the whitelist");
+
     Ok(())
 }

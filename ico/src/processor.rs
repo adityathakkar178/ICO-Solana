@@ -8,7 +8,7 @@ use crate::instructions::{
     mint::{mint_token, MintSplArgs},
     transfer::{transfer_tokens, TransferTokensArgs},
     whitelist::{whitelist_account, WhitelistArgs},
-    presale::{pre_sale, PreSaleArgs, BuyerArgs},
+    // presale::{pre_sale, PreSaleArgs, BuyerArgs},
 };
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
@@ -17,7 +17,7 @@ enum MyInstruction {
     MintSpl(MintSplArgs),
     TransferTokens(TransferTokensArgs),
     WhiteListAccount(WhitelistArgs),
-    PreSale(PreSaleArgs, WhitelistArgs, BuyerArgs),
+    // PreSale(PreSaleArgs, WhitelistArgs, BuyerArgs),
 }
 
 pub fn process_instruction(
@@ -31,7 +31,7 @@ pub fn process_instruction(
         MyInstruction::Create(args) => create_token(accounts, args),
         MyInstruction::MintSpl(args) => mint_token(accounts, args),
         MyInstruction::TransferTokens(args) => transfer_tokens(accounts, args),
-        MyInstruction::WhiteListAccount(mut args) => whitelist_account(accounts, &mut args),
-        MyInstruction::PreSale(args, whitelist_args, buyers_args) => pre_sale(accounts, args, whitelist_args, buyers_args),
+        MyInstruction::WhiteListAccount(mut args) => whitelist_account(&mut args),
+        // MyInstruction::PreSale(args, whitelist_args, buyers_args) => pre_sale(accounts, args, whitelist_args, buyers_args),
     }
 }

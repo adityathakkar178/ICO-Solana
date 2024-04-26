@@ -49,9 +49,9 @@ pub fn pre_sale(
 
     msg!("Pre sale has started!!!!");
 
-    if !white_list_args.accounts.contains(buyer_account.key) {
-        return Err(ProgramError::InvalidArgument);
-    }
+    // if !white_list_args.accounts.contains(buyer_account.key) {
+    //     return Err(ProgramError::InvalidArgument);
+    // }
 
     let amount = TransferTokensArgs {
         quantity: buyer_args.buy_quantity,

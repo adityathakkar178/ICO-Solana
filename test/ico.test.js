@@ -46,7 +46,9 @@ describe('Intitial Coin Offering!', () => {
 
     const recipientWallet = Keypair.generate();
 
-    const whiteListAccount = Keypair.generate();
+    const whiteListAccount1 = Keypair.generate();
+
+    const whiteListAccount2 = Keypair.generate();
 
     it('Create a Token!', async () => {
         const instructionData = new CreateTokenArgs({
@@ -82,7 +84,9 @@ describe('Intitial Coin Offering!', () => {
             programId: program.publicKey,
             data: instructionData.toBuffer(),
         });
+
         const ts = new Transaction().add(ix);
+
         const sx = await sendAndConfirmTransaction(connection, ts, [
             payer,
             tokenMintKeypair,
@@ -137,6 +141,7 @@ describe('Intitial Coin Offering!', () => {
             programId: program.publicKey,
             data: instructionData.toBuffer(),
         });
+
         const ts = new Transaction().add(ix);
 
         const sx = await sendAndConfirmTransaction(connection, ts, [payer]);
@@ -151,11 +156,14 @@ describe('Intitial Coin Offering!', () => {
             tokenMintKeypair.publicKey,
             payer.publicKey
         );
+
         console.log(`Owner Token Address: ${fromAssociatedTokenAddress}`);
+
         const toAssociatedTokenAddress = await getAssociatedTokenAddress(
             tokenMintKeypair.publicKey,
             recipientWallet.publicKey
         );
+
         console.log(`Recipient Token Address: ${toAssociatedTokenAddress}`);
 
         const transferToInstructionData = new TransferTokensArgs({
@@ -206,25 +214,54 @@ describe('Intitial Coin Offering!', () => {
             programId: program.publicKey,
             data: transferToInstructionData.toBuffer(),
         });
+
         const ts = new Transaction().add(ix);
+
         const sx = await sendAndConfirmTransaction(
             connection,
             ts,
             [payer, recipientWallet],
             { skipPreflight: true }
         );
+
         console.log(`Tx Signature: ${sx}`);
     });
 
     it('Add To Whitelist!', async () => {
         const instructionData = new WhiteListArgs({
             instruction: MyInstruction.WhiteList,
-            accounts: whiteListAccount.publicKey,
-            isWhiteList: true,
+            accounts: [
+                whiteListAccount1.publicKey,
+                whiteListAccount2.publicKey,
+            ],
         });
 
-        console.log(instructionData);
-        console.log(whiteListAccount.publicKey);
+        let ix = new TransactionInstruction({
+            keys: [
+                {
+                    pubkey: whiteListAccount1.publicKey,
+                    isSigner: true,
+                    isWritable: true,
+                },
+                {
+                    pubkey: whiteListAccount2.publicKey,
+                    isSigner: true,
+                    isWritable: true,
+                },
+            ],
+            programId: program.publicKey,
+            data: instructionData.toBuffer(),
+        });
+
+        const ts = new Transaction().add(ix);
+
+        const sx = await sendAndConfirmTransaction(connection, ts, [
+            payer,
+            whiteListAccount1,
+            whiteListAccount2,
+        ]);
+
+        console.log(`Tx Signature: ${sx}`);
     });
 });
 

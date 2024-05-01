@@ -83,6 +83,7 @@ const WhiteListArgsSchema = new Map([
             fields: [
                 ['instruction', 'u8'],
                 ['accounts', ['string']],
+                ['admin_account', 'string'],
             ],
         },
     ],

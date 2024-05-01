@@ -16,7 +16,7 @@ enum MyInstruction {
     Create(CreateTokenArgs),
     MintSpl(MintSplArgs),
     TransferTokens(TransferTokensArgs),
-    WhiteListAccount(WhitelistArgs),
+    WhiteListAccount(WhitelistArgs, String),
     // PreSale(PreSaleArgs, WhitelistArgs, BuyerArgs),
 }
 
@@ -31,7 +31,7 @@ pub fn process_instruction(
         MyInstruction::Create(args) => create_token(accounts, args),
         MyInstruction::MintSpl(args) => mint_token(accounts, args),
         MyInstruction::TransferTokens(args) => transfer_tokens(accounts, args),
-        MyInstruction::WhiteListAccount(args) => whitelist_account(args),
+        MyInstruction::WhiteListAccount(args, admin_account) => whitelist_account(args, admin_account),
         // MyInstruction::PreSale(args, whitelist_args, buyers_args) => pre_sale(accounts, args, whitelist_args, buyers_args),
     }
 }

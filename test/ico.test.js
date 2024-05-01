@@ -234,6 +234,7 @@ describe('Intitial Coin Offering!', () => {
                 whiteListAccount1.publicKey.toString(),
                 whiteListAccount2.publicKey.toString(),
             ],
+            admin_account: payer.publicKey.toString(),
         });
 
         let ix = new TransactionInstruction({

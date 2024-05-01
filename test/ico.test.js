@@ -231,8 +231,8 @@ describe('Intitial Coin Offering!', () => {
         const instructionData = new WhiteListArgs({
             instruction: MyInstruction.WhiteList,
             accounts: [
-                whiteListAccount1.publicKey,
-                whiteListAccount2.publicKey,
+                whiteListAccount1.publicKey.toString(),
+                whiteListAccount2.publicKey.toString(),
             ],
         });
 

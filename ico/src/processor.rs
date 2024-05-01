@@ -31,7 +31,7 @@ pub fn process_instruction(
         MyInstruction::Create(args) => create_token(accounts, args),
         MyInstruction::MintSpl(args) => mint_token(accounts, args),
         MyInstruction::TransferTokens(args) => transfer_tokens(accounts, args),
-        MyInstruction::WhiteListAccount(mut args) => whitelist_account(&mut args),
+        MyInstruction::WhiteListAccount(args) => whitelist_account(args),
         // MyInstruction::PreSale(args, whitelist_args, buyers_args) => pre_sale(accounts, args, whitelist_args, buyers_args),
     }
 }

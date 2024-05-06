@@ -1,7 +1,8 @@
 use {
     super::WhitelistArgs,
-    crate::instructions::{transfer_tokens, TransferTokensArgs},
+    crate::instructions::{transfer_tokens, whitelist::Tree, TransferTokensArgs, WHITELIST_TREE},
     borsh::{BorshDeserialize, BorshSerialize},
+    merkletreers::{tree::MerkleTree, utils::hash_it},
     solana_program::{
         account_info::{next_account_info, AccountInfo},
         clock::Clock,
@@ -35,6 +36,7 @@ pub fn pre_sale(
     args: PreSaleArgs,
     white_list_args: WhitelistArgs,
     buyer_args: BuyerArgs,
+    whitelist_tree: &Tree, 
 ) -> ProgramResult {
     let accounts_iter = &mut accounts.iter();
 
@@ -43,15 +45,26 @@ pub fn pre_sale(
     let system_program = next_account_info(accounts_iter)?;
 
     let current_time = Clock::get()?.unix_timestamp as u64;
-    if current_time < args.pre_sale_start_time && current_time > args.pre_sale_end_time {
+    if current_time < args.pre_sale_start_time || current_time > args.pre_sale_end_time {
         return Err(ProgramError::InvalidArgument);
     }
 
-    msg!("Pre sale has started!!!!");
+    msg!("Pre sale has started!");
 
-    // if !white_list_args.accounts.contains(buyer_account.key) {
-    //     return Err(ProgramError::InvalidArgument);
-    // }
+    let root = whitelist_tree.merkle_tree.root; 
+
+    msg!("{:?}", root);
+
+    let buyer = buyer_account.key.to_string();
+
+    let mut leaf = [0u8; 32];
+    hash_it(buyer.as_bytes(), &mut leaf);
+    let proof = whitelist_tree.merkle_tree.make_proof(leaf);
+    msg!("Proof: {:?}", proof);
+
+    let result = whitelist_tree.merkle_tree.check_proof(proof, leaf);
+    msg!("result: {:?}", result);
+
 
     let amount = TransferTokensArgs {
         quantity: buyer_args.buy_quantity,

@@ -13,6 +13,7 @@ const MyInstruction = {
     MintSpl: 1,
     TransferTokens: 2,
     WhiteList: 3,
+    PreSale: 4,
 };
 
 class CreateTokenArgs extends Assignable {
@@ -89,10 +90,31 @@ const WhiteListArgsSchema = new Map([
     ],
 ]);
 
+class PreSaleArgs extends Assignable {
+    toBuffer() {
+        return Buffer.from(borsh.serialize(PreSaleArgsSchema, this));
+    }
+}
+
+const PreSaleArgsSchema = new Map([
+    [
+        PreSaleArgs,
+        {
+            kind: 'struct',
+            fields: [
+                ['instruction', 'u8'],
+                ['accounts', ['string']],
+                ['admin_account', 'string'],
+            ],
+        },
+    ],
+]);
+
 module.exports = {
     MyInstruction,
     CreateTokenArgs,
     MintSplArgs,
     TransferTokensArgs,
     WhiteListArgs,
+    PreSaleArgs,
 };

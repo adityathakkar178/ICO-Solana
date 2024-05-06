@@ -17,7 +17,7 @@ enum MyInstruction {
     MintSpl(MintSplArgs),
     TransferTokens(TransferTokensArgs),
     WhiteListAccount(WhitelistArgs, String),
-    // PreSale(PreSaleArgs, WhitelistArgs, BuyerArgs),
+    // PreSale(Tree),
 }
 
 pub fn process_instruction(
@@ -31,7 +31,12 @@ pub fn process_instruction(
         MyInstruction::Create(args) => create_token(accounts, args),
         MyInstruction::MintSpl(args) => mint_token(accounts, args),
         MyInstruction::TransferTokens(args) => transfer_tokens(accounts, args),
-        MyInstruction::WhiteListAccount(args, admin_account) => whitelist_account(args, admin_account),
+        MyInstruction::WhiteListAccount(args, admin_account) => {
+            match whitelist_account(args, admin_account) {
+                Ok(_) => Ok(()), // Return Ok(()) if whitelisting succeeds
+                Err(err) => Err(err), // Return the error if whitelisting fails
+            }
+        }
         // MyInstruction::PreSale(args, whitelist_args, buyers_args) => pre_sale(accounts, args, whitelist_args, buyers_args),
     }
 }

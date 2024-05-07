@@ -48,7 +48,3 @@ pub fn whitelist_account(args: WhitelistArgs, admin_account: String) -> ProgramR
 
     Ok(())
 }
-
-pub fn acc() {
-    
-}

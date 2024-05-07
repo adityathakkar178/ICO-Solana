@@ -1,14 +1,17 @@
+use solana_program::program_error::ProgramError;
+
 use {
     borsh::{BorshDeserialize, BorshSerialize},
     solana_program::{account_info::AccountInfo, entrypoint::ProgramResult, pubkey::Pubkey},
 };
 
 use crate::instructions::{
-    create::{create_token, CreateTokenArgs},
-    mint::{mint_token, MintSplArgs},
-    transfer::{transfer_tokens, TransferTokensArgs},
-    whitelist::{whitelist_account, WhitelistArgs},
-    // presale::{pre_sale, PreSaleArgs, BuyerArgs},
+    self, 
+    create::{create_token, CreateTokenArgs}, 
+    mint::{mint_token, MintSplArgs}, 
+    presale::{pre_sale, BuyerArgs, PreSaleArgs}, 
+    transfer::{transfer_tokens, TransferTokensArgs}, 
+    whitelist::{whitelist_account, WhitelistArgs}
 };
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
@@ -17,7 +20,15 @@ enum MyInstruction {
     MintSpl(MintSplArgs),
     TransferTokens(TransferTokensArgs),
     WhiteListAccount(WhitelistArgs, String),
-    // PreSale(Tree),
+    PreSale(),
+}
+
+pub(crate) static mut WHITELIST_TREE: Option<&instructions::Tree> = None;
+
+impl AsRef<instructions::Tree> for instructions::Tree {
+    fn as_ref(&self) -> &instructions::Tree {
+        self
+    }
 }
 
 pub fn process_instruction(
@@ -25,6 +36,7 @@ pub fn process_instruction(
     accounts: &[AccountInfo],
     instruction_data: &[u8],
 ) -> ProgramResult {
+    
     let instruction = MyInstruction::try_from_slice(instruction_data)?;
 
     match instruction {
@@ -33,10 +45,13 @@ pub fn process_instruction(
         MyInstruction::TransferTokens(args) => transfer_tokens(accounts, args),
         MyInstruction::WhiteListAccount(args, admin_account) => {
             match whitelist_account(args, admin_account) {
-                Ok(_) => Ok(()), // Return Ok(()) if whitelisting succeeds
-                Err(err) => Err(err), // Return the error if whitelisting fails
+                Ok(_) => Ok(()), 
+                Err(err) => Err(err), 
             }
         }
-        // MyInstruction::PreSale(args, whitelist_args, buyers_args) => pre_sale(accounts, args, whitelist_args, buyers_args),
+        MyInstruction::PreSale() => {
+            let tree = unsafe { WHITELIST_TREE.unwrap() }; 
+            pre_sale(accounts, tree )
+        }   
     }
 }

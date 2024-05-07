@@ -20,14 +20,13 @@ const {
     TransferTokensArgs,
     WhiteListArgs,
     MyInstruction,
+    PreSaleArgs,
 } = require('./instruction');
 const { BN } = require('bn.js');
 const fs = require('fs');
 
 function createKeypairFromFile(path) {
-    return Keypair.fromSecretKey(
-        Buffer.from(JSON.parse(fs.readFileSync(path, 'utf-8')))
-    );
+    return Keypair.fromSecretKey(Buffer.from(JSON.parse(fs.readFileSync(path, 'utf-8'))));
 }
 
 describe('Intitial Coin Offering!', () => {
@@ -260,6 +259,33 @@ describe('Intitial Coin Offering!', () => {
             payer,
             whiteListAccount1,
             whiteListAccount2,
+        ]);
+
+        console.log(`Tx Signature: ${sx}`);
+    });
+
+    it('Pre sale', async () => {
+        const instructionData = new PreSaleArgs({
+            instruction: MyInstruction.PreSale,
+        });
+
+        let ix = new TransactionInstruction({
+            keys: [
+                {
+                    pubkey: whiteListAccount1.publicKey,
+                    isSigner: true,
+                    isWritable: true,
+                },
+            ],
+            programId: program.publicKey,
+            data: instructionData.toBuffer(),
+        });
+
+        const ts = new Transaction().add(ix);
+
+        const sx = await sendAndConfirmTransaction(connection, ts, [
+            payer,
+            whiteListAccount1,
         ]);
 
         console.log(`Tx Signature: ${sx}`);

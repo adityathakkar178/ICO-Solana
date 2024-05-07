@@ -1,8 +1,8 @@
 use {
     super::WhitelistArgs,
-    crate::instructions::{transfer_tokens, whitelist::Tree, TransferTokensArgs, WHITELIST_TREE},
+    crate::instructions::{transfer_tokens, whitelist::Tree, TransferTokensArgs},
     borsh::{BorshDeserialize, BorshSerialize},
-    merkletreers::{tree::MerkleTree, utils::hash_it},
+    merkletreers::{merkle_proof_check::merkle_proof_check, utils::hash_it,},
     solana_program::{
         account_info::{next_account_info, AccountInfo},
         clock::Clock,
@@ -33,9 +33,7 @@ pub struct BuyerArgs {
 
 pub fn pre_sale(
     accounts: &[AccountInfo],
-    args: PreSaleArgs,
-    white_list_args: WhitelistArgs,
-    buyer_args: BuyerArgs,
+
     whitelist_tree: &Tree, 
 ) -> ProgramResult {
     let accounts_iter = &mut accounts.iter();
@@ -44,10 +42,10 @@ pub fn pre_sale(
     let buyer_account = next_account_info(accounts_iter)?;
     let system_program = next_account_info(accounts_iter)?;
 
-    let current_time = Clock::get()?.unix_timestamp as u64;
-    if current_time < args.pre_sale_start_time || current_time > args.pre_sale_end_time {
-        return Err(ProgramError::InvalidArgument);
-    }
+    // let current_time = Clock::get()?.unix_timestamp as u64;
+    // if current_time < args.pre_sale_start_time || current_time > args.pre_sale_end_time {
+    //     return Err(ProgramError::InvalidArgument);
+    // }
 
     msg!("Pre sale has started!");
 
@@ -62,27 +60,27 @@ pub fn pre_sale(
     let proof = whitelist_tree.merkle_tree.make_proof(leaf);
     msg!("Proof: {:?}", proof);
 
-    let result = whitelist_tree.merkle_tree.check_proof(proof, leaf);
+    let result = merkle_proof_check(proof, leaf);
     msg!("result: {:?}", result);
 
 
-    let amount = TransferTokensArgs {
-        quantity: buyer_args.buy_quantity,
-    };
-    let total_cost = amount.quantity * args.pre_sale_price;
+    // let amount = TransferTokensArgs {
+    //     quantity: buyer_args.buy_quantity,
+    // };
+    // let total_cost = amount.quantity * args.pre_sale_price;
 
-    let transfer_sol =
-        system_instruction::transfer(buyer_account.key, seller_account.key, total_cost);
-    invoke(
-        &transfer_sol,
-        &[
-            buyer_account.clone(),
-            seller_account.clone(),
-            system_program.clone(),
-        ],
-    )?;
+    // let transfer_sol =
+    //     system_instruction::transfer(buyer_account.key, seller_account.key, total_cost);
+    // invoke(
+    //     &transfer_sol,
+    //     &[
+    //         buyer_account.clone(),
+    //         seller_account.clone(),
+    //         system_program.clone(),
+    //     ],
+    // )?;
 
-    transfer_tokens(accounts, amount)?;
+    // transfer_tokens(accounts, amount)?;
 
     Ok(())
 }

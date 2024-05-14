@@ -1,17 +1,14 @@
-use solana_program::program_error::ProgramError;
-
 use {
     borsh::{BorshDeserialize, BorshSerialize},
     solana_program::{account_info::AccountInfo, entrypoint::ProgramResult, pubkey::Pubkey},
 };
 
 use crate::instructions::{
-    self, 
     create::{create_token, CreateTokenArgs}, 
     mint::{mint_token, MintSplArgs}, 
-    presale::{pre_sale, BuyerArgs, PreSaleArgs}, 
+    presale::{pre_sale, Tree}, 
     transfer::{transfer_tokens, TransferTokensArgs}, 
-    whitelist::{whitelist_account, WhitelistArgs}
+    whitelist::{whitelist_account, WhitelistArgs,}
 };
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
@@ -20,15 +17,7 @@ enum MyInstruction {
     MintSpl(MintSplArgs),
     TransferTokens(TransferTokensArgs),
     WhiteListAccount(WhitelistArgs, String),
-    PreSale(),
-}
-
-pub(crate) static mut WHITELIST_TREE: Option<&instructions::Tree> = None;
-
-impl AsRef<instructions::Tree> for instructions::Tree {
-    fn as_ref(&self) -> &instructions::Tree {
-        self
-    }
+    PreSale(Tree),
 }
 
 pub fn process_instruction(
@@ -49,9 +38,7 @@ pub fn process_instruction(
                 Err(err) => Err(err), 
             }
         }
-        MyInstruction::PreSale() => {
-            let tree = unsafe { WHITELIST_TREE.unwrap() }; 
-            pre_sale(accounts, tree )
-        }   
+        MyInstruction::PreSale(args) => pre_sale(accounts, args)
+        
     }
 }

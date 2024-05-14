@@ -26,7 +26,9 @@ const { BN } = require('bn.js');
 const fs = require('fs');
 
 function createKeypairFromFile(path) {
-    return Keypair.fromSecretKey(Buffer.from(JSON.parse(fs.readFileSync(path, 'utf-8'))));
+    return Keypair.fromSecretKey(
+        Buffer.from(JSON.parse(fs.readFileSync(path, 'utf-8')))
+    );
 }
 
 describe('Intitial Coin Offering!', () => {
@@ -48,6 +50,8 @@ describe('Intitial Coin Offering!', () => {
     const whiteListAccount1 = Keypair.generate();
 
     const whiteListAccount2 = Keypair.generate();
+
+    const buyer = Keypair.generate();
 
     it('Create a Token!', async () => {
         const instructionData = new CreateTokenArgs({
@@ -230,8 +234,8 @@ describe('Intitial Coin Offering!', () => {
         const instructionData = new WhiteListArgs({
             instruction: MyInstruction.WhiteList,
             accounts: [
-                whiteListAccount1.publicKey.toString(),
-                whiteListAccount2.publicKey.toString(),
+                '2v2jcNq1NDLWMq3JZR2YnJDnLGW8aZGv4K6RQjT6ZB61',
+                'ED7fL3bnAXLSDup5fVHxv8dKELLpEw5hCaA1yE1FBwfV',
             ],
             admin_account: payer.publicKey.toString(),
         });
@@ -267,12 +271,24 @@ describe('Intitial Coin Offering!', () => {
     it('Pre sale', async () => {
         const instructionData = new PreSaleArgs({
             instruction: MyInstruction.PreSale,
+            proof: [
+                [
+                    137, 175, 121, 40, 189, 184, 36, 44, 158, 159, 97, 140, 165,
+                    89, 136, 246, 100, 181, 18, 236, 163, 184, 120, 134, 171,
+                    200, 22, 138, 48, 240, 106, 62,
+                ],
+            ],
+            root: [
+                232, 71, 144, 69, 52, 247, 125, 54, 56, 49, 68, 22, 86, 122,
+                162, 109, 246, 62, 87, 131, 204, 40, 211, 129, 31, 139, 4, 213,
+                191, 242, 129, 97,
+            ],
         });
 
         let ix = new TransactionInstruction({
             keys: [
                 {
-                    pubkey: whiteListAccount1.publicKey,
+                    pubkey: buyer.publicKey,
                     isSigner: true,
                     isWritable: true,
                 },
@@ -285,8 +301,8 @@ describe('Intitial Coin Offering!', () => {
 
         const sx = await sendAndConfirmTransaction(connection, ts, [
             payer,
-            whiteListAccount1,
-        ]);
+            buyer,
+        ]).catch((err) => console.error('err', err));
 
         console.log(`Tx Signature: ${sx}`);
     });

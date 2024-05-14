@@ -103,6 +103,8 @@ const PreSaleArgsSchema = new Map([
             kind: 'struct',
             fields: [
                 ['instruction', 'u8'],
+                ['proof',[['u8', 32]]],
+                ['root', ['u8', 32]]
             ],
         },
     ],

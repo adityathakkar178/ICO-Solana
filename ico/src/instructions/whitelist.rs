@@ -11,12 +11,6 @@ pub struct WhitelistArgs {
 
 const ADMIN_ACCOUNT: &str = "Cv66dQwcSJDdXNVHybchYqp73d75Y8XWj6pKcjN3ffAy";
 
-pub struct Tree {
-    pub merkle_tree: MerkleTree,
-}
-
-pub(crate) static mut WHITELIST_TREE: Option<Tree> = None;
-
 pub fn whitelist_account(args: WhitelistArgs, admin_account: String) -> ProgramResult {
     if admin_account != ADMIN_ACCOUNT {
         return Err(ProgramError::IllegalOwner);
@@ -33,18 +27,20 @@ pub fn whitelist_account(args: WhitelistArgs, admin_account: String) -> ProgramR
         })
         .collect();
 
-    let whitelist_tree = MerkleTree::new(leaves);
+    let whitelist_tree = MerkleTree::new(leaves.clone());
 
-    let tree = Tree {
-        merkle_tree: whitelist_tree,
-    };
+    let root = whitelist_tree.root;
 
     msg!("Accounts have been added to the whitelist");
-    msg!("{:?}", tree.merkle_tree.root);
+    msg!("{:?}", root);
 
-    unsafe {
-        WHITELIST_TREE = Some(tree);
+    for leaf in leaves.iter() {
+        let proof = whitelist_tree.make_proof(*leaf);
+        msg!("Proof{:?}", proof);
     }
+
+    // let result = whitelist_tree.check_proof(proof, leaf);
+    // msg!("result: {:?}", result);
 
     Ok(())
 }

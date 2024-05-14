@@ -21,6 +21,7 @@ const {
     WhiteListArgs,
     MyInstruction,
     PreSaleArgs,
+    SaleArgs,
 } = require('./instruction');
 const { BN } = require('bn.js');
 const fs = require('fs');
@@ -285,17 +286,76 @@ describe('Intitial Coin Offering!', () => {
             ],
             pre_sale_price: new BN(5),
             pre_sale_limit: new BN(100),
-            pre_sale_start_time: new BN(100),
-            pre_sale_end_time: new BN(100),
+            pre_sale_start_time: new BN(Date.now() / 1000),
+            pre_sale_end_time: new BN(Date.now() / 1000 + 3600),
             quantity: new BN(100),
             buy_quantity: new BN(5),
         });
 
         let ix = new TransactionInstruction({
             keys: [
+                {
+                    pubkey: payer.publicKey,
+                    isSigner: true,
+                    isWritable: true,
+                },
+                {
+                    pubkey: buyer.publicKey,
+                    isSigner: true,
+                    isWritable: true,
+                },
                 { pubkey: payer.publicKey, isSigner: true, isWritable: true },
                 {
-                    pubkey: tokenMintKeypair.publicKey,
+                    pubkey: recipientWallet.publicKey,
+                    isSigner: true,
+                    isWritable: true,
+                },
+                {
+                    pubkey: SystemProgram.programId,
+                    isSigner: false,
+                    isWritable: false,
+                },
+            ],
+            programId: program.publicKey,
+            data: instructionData.toBuffer(),
+        });
+
+        const ts = new Transaction().add(ix);
+
+        const sx = await sendAndConfirmTransaction(connection, ts, [
+            payer,
+            buyer,
+        ]).catch((err) => console.error('err', err));
+
+        console.log(`Tx Signature: ${sx}`);
+    });
+
+    it('Sale', async () => {
+        const instructionData = new SaleArgs({
+            instruction: MyInstruction.Sale,
+            pre_sale_price: new BN(5),
+            pre_sale_limit: new BN(100),
+            pre_sale_start_time: new BN(Date.now() / 1000),
+            pre_sale_end_time: new BN(Date.now() / 1000 + 3600),
+            quantity: new BN(100),
+            buy_quantity: new BN(5),
+        });
+
+        let ix = new TransactionInstruction({
+            keys: [
+                {
+                    pubkey: payer.publicKey,
+                    isSigner: true,
+                    isWritable: true,
+                },
+                {
+                    pubkey: buyer.publicKey,
+                    isSigner: true,
+                    isWritable: true,
+                },
+                { pubkey: payer.publicKey, isSigner: true, isWritable: true },
+                {
+                    pubkey: recipientWallet.publicKey,
                     isSigner: true,
                     isWritable: true,
                 },
@@ -320,4 +380,4 @@ describe('Intitial Coin Offering!', () => {
     });
 });
 
-jest.setTimeout(30000);
+jest.setTimeout(300000);

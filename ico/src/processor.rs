@@ -6,7 +6,7 @@ use {
 use crate::instructions::{
     create::{create_token, CreateTokenArgs}, 
     mint::{mint_token, MintSplArgs}, 
-    presale::{pre_sale, Tree}, 
+    presale::{pre_sale, Tree, PreSaleArgs, BuyerArgs}, 
     transfer::{transfer_tokens, TransferTokensArgs}, 
     whitelist::{whitelist_account, WhitelistArgs,}
 };
@@ -17,7 +17,7 @@ enum MyInstruction {
     MintSpl(MintSplArgs),
     TransferTokens(TransferTokensArgs),
     WhiteListAccount(WhitelistArgs, String),
-    PreSale(Tree),
+    PreSale(Tree, PreSaleArgs, BuyerArgs),
 }
 
 pub fn process_instruction(
@@ -38,7 +38,7 @@ pub fn process_instruction(
                 Err(err) => Err(err), 
             }
         }
-        MyInstruction::PreSale(args) => pre_sale(accounts, args)
+        MyInstruction::PreSale(args, pre_sale_args, buyers_args) => pre_sale(accounts, args, pre_sale_args, buyers_args)
         
     }
 }

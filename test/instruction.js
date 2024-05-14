@@ -104,7 +104,13 @@ const PreSaleArgsSchema = new Map([
             fields: [
                 ['instruction', 'u8'],
                 ['proof',[['u8', 32]]],
-                ['root', ['u8', 32]]
+                ['root', ['u8', 32]],
+                ['pre_sale_price', 'u64'],
+                ['pre_sale_limit', 'u64'],
+                ['pre_sale_start_time', 'u64'],
+                ['pre_sale_end_time', 'u64'],
+                ['quantity', 'u64'],
+                ['buy_quantity', 'u64']
             ],
         },
     ],

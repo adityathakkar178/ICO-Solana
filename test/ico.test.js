@@ -283,14 +283,26 @@ describe('Intitial Coin Offering!', () => {
                 162, 109, 246, 62, 87, 131, 204, 40, 211, 129, 31, 139, 4, 213,
                 191, 242, 129, 97,
             ],
+            pre_sale_price: new BN(5),
+            pre_sale_limit: new BN(100),
+            pre_sale_start_time: new BN(100),
+            pre_sale_end_time: new BN(100),
+            quantity: new BN(100),
+            buy_quantity: new BN(5),
         });
 
         let ix = new TransactionInstruction({
             keys: [
+                { pubkey: payer.publicKey, isSigner: true, isWritable: true },
                 {
-                    pubkey: buyer.publicKey,
+                    pubkey: tokenMintKeypair.publicKey,
                     isSigner: true,
                     isWritable: true,
+                },
+                {
+                    pubkey: SystemProgram.programId,
+                    isSigner: false,
+                    isWritable: false,
                 },
             ],
             programId: program.publicKey,

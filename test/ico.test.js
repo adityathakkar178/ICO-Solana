@@ -292,6 +292,8 @@ describe('Intitial Coin Offering!', () => {
             buy_quantity: new BN(5),
         });
 
+        console.log(instructionData);
+
         let ix = new TransactionInstruction({
             keys: [
                 {
@@ -311,7 +313,7 @@ describe('Intitial Coin Offering!', () => {
                     isWritable: true,
                 },
                 {
-                    pubkey: SystemProgram.programId,
+                    pubkey: TOKEN_PROGRAM_ID.programId,
                     isSigner: false,
                     isWritable: false,
                 },
@@ -320,30 +322,21 @@ describe('Intitial Coin Offering!', () => {
             data: instructionData.toBuffer(),
         });
 
-        const ts = new Transaction().add(ix);
+        console.log(ix);
 
-        const sx = await sendAndConfirmTransaction(connection, ts, [
-            payer,
-            buyer,
-        ]).catch((err) => console.error('err', err));
+        const ts = new Transaction().add(ix);
+        console.log(ts);
+        const sx = await sendAndConfirmTransaction(
+            connection,
+            ts,
+            [payer, buyer, recipientWallet],
+            { skipPreflight: true }
+        ).catch((err) => console.error('err', err));
 
         console.log(`Tx Signature: ${sx}`);
     });
 
     it('Sale', async () => {
-        const fromAssociatedTokenAddress = await getAssociatedTokenAddress(
-            tokenMintKeypair.publicKey,
-            payer.publicKey
-        );
-
-        console.log(`Owner Token Address: ${fromAssociatedTokenAddress}`);
-
-        const toAssociatedTokenAddress = await getAssociatedTokenAddress(
-            tokenMintKeypair.publicKey,
-            recipientWallet.publicKey
-        );
-
-        console.log(`Recipient Token Address: ${toAssociatedTokenAddress}`);
         const instructionData = new SaleArgs({
             instruction: MyInstruction.Sale,
             pre_sale_price: new BN(5),
@@ -373,7 +366,7 @@ describe('Intitial Coin Offering!', () => {
                     isWritable: true,
                 },
                 {
-                    pubkey: SystemProgram.programId,
+                    pubkey: TOKEN_PROGRAM_ID.programId,
                     isSigner: false,
                     isWritable: false,
                 },
@@ -384,13 +377,15 @@ describe('Intitial Coin Offering!', () => {
 
         const ts = new Transaction().add(ix);
 
-        const sx = await sendAndConfirmTransaction(connection, ts, [
-            payer,
-            buyer,
-        ]).catch((err) => console.error('err', err));
+        const sx = await sendAndConfirmTransaction(
+            connection,
+            ts,
+            [payer, buyer, recipientWallet],
+            { skipPreflight: true }
+        ).catch((err) => console.error('err', err));
 
         console.log(`Tx Signature: ${sx}`);
     });
 });
 
-jest.setTimeout(300000);
+jest.setTimeout(3000);

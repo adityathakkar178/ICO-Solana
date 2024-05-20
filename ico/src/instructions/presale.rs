@@ -21,7 +21,6 @@ pub struct PreSaleArgs {
     pub pre_sale_start_time: u64,
     pub pre_sale_end_time: u64,
     pub quantity: u64,
-    pub account: bool,
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
@@ -31,8 +30,8 @@ pub struct BuyerArgs {
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct Tree {
-    proof: Vec<[u8; 32]>,
-    root: [u8; 32],
+    pub proof: Vec<[u8; 32]>,
+    pub root: [u8; 32],
 }
 
 fn merkle_verify(proof: Vec<[u8; 32]>, root: [u8; 32], leaf: [u8; 32]) -> bool {

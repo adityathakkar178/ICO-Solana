@@ -21,7 +21,6 @@ pub struct SaleArgs {
     pub sale_start_time: u64,
     pub sale_end_time: u64,
     pub quantity: u64,
-    pub account: bool,
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]

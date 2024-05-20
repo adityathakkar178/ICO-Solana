@@ -39,11 +39,11 @@ pub fn process_instruction(
                 Err(err) => Err(err),
             }
         }
-        MyInstruction::PreSale(args, pre_sale_args, buyers_args) => {
-            pre_sale(accounts, args, pre_sale_args, buyers_args)
-        }
-        MyInstruction::Sale(pre_sale_args, sale_args, buyers_args) => {
-            sale(accounts, pre_sale_args, sale_args, buyers_args)
-        }
+        MyInstruction::PreSale(args, pre_sale_args1, buyers_args) => 
+            pre_sale(accounts, args, pre_sale_args1, buyers_args),
+        
+        MyInstruction::Sale(pre_sale_args1, sale_args1, buyers_args) => 
+            sale(accounts, pre_sale_args1, sale_args1, buyers_args),
+        
     }
 }

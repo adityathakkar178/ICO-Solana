@@ -14,6 +14,7 @@ const MyInstruction = {
     TransferTokens: 2,
     WhiteList: 3,
     PreSale: 4,
+    Sale: 5,
 };
 
 class CreateTokenArgs extends Assignable {
@@ -103,8 +104,38 @@ const PreSaleArgsSchema = new Map([
             kind: 'struct',
             fields: [
                 ['instruction', 'u8'],
-                ['proof',[['u8', 32]]],
-                ['root', ['u8', 32]]
+                ['proof', [['u8', 32]]],
+                ['root', ['u8', 32]],
+                ['pre_sale_price', 'u64'],
+                ['pre_sale_limit', 'u64'],
+                ['pre_sale_start_time', 'u64'],
+                ['pre_sale_end_time', 'u64'],
+                ['quantity', 'u64'],
+                ['buy_quantity', 'u64'],
+            ],
+        },
+    ],
+]);
+
+class SaleArgs extends Assignable {
+    toBuffer() {
+        return Buffer.from(borsh.serialize(SaleArgsSchema, this));
+    }
+}
+
+const SaleArgsSchema = new Map([
+    [
+        SaleArgs,
+        {
+            kind: 'struct',
+            fields: [
+                ['instruction', 'u8'],
+                ['sale_price', 'u64'],
+                ['sale_limit', 'u64'],
+                ['sale_start_time', 'u64'],
+                ['sale_end_time', 'u64'],
+                ['quantity', 'u64'],
+                ['buy_quantity', 'u64'],
             ],
         },
     ],
@@ -117,4 +148,5 @@ module.exports = {
     TransferTokensArgs,
     WhiteListArgs,
     PreSaleArgs,
+    SaleArgs,
 };

@@ -21,6 +21,7 @@ const {
     WhiteListArgs,
     MyInstruction,
     PreSaleArgs,
+    SaleArgs,
 } = require('./instruction');
 const { BN } = require('bn.js');
 const fs = require('fs');
@@ -283,14 +284,91 @@ describe('Intitial Coin Offering!', () => {
                 162, 109, 246, 62, 87, 131, 204, 40, 211, 129, 31, 139, 4, 213,
                 191, 242, 129, 97,
             ],
+            pre_sale_price: new BN(5),
+            pre_sale_limit: new BN(100),
+            pre_sale_start_time: new BN(Date.now() / 1000),
+            pre_sale_end_time: new BN(Date.now() / 1000 + 3600),
+            quantity: new BN(100),
+            buy_quantity: new BN(5),
+        });
+
+        console.log(instructionData);
+
+        let ix = new TransactionInstruction({
+            keys: [
+                {
+                    pubkey: payer.publicKey,
+                    isSigner: true,
+                    isWritable: true,
+                },
+                {
+                    pubkey: buyer.publicKey,
+                    isSigner: true,
+                    isWritable: true,
+                },
+                { pubkey: payer.publicKey, isSigner: true, isWritable: true },
+                {
+                    pubkey: recipientWallet.publicKey,
+                    isSigner: true,
+                    isWritable: true,
+                },
+                {
+                    pubkey: TOKEN_PROGRAM_ID.programId,
+                    isSigner: false,
+                    isWritable: false,
+                },
+            ],
+            programId: program.publicKey,
+            data: instructionData.toBuffer(),
+        });
+
+        console.log(ix);
+
+        const ts = new Transaction().add(ix);
+        console.log(ts);
+        const sx = await sendAndConfirmTransaction(
+            connection,
+            ts,
+            [payer, buyer, recipientWallet],
+            { skipPreflight: true }
+        ).catch((err) => console.error('err', err));
+
+        console.log(`Tx Signature: ${sx}`);
+    });
+
+    it('Sale', async () => {
+        const instructionData = new SaleArgs({
+            instruction: MyInstruction.Sale,
+            pre_sale_price: new BN(5),
+            pre_sale_limit: new BN(100),
+            pre_sale_start_time: new BN(Date.now() / 1000 + 3600),
+            pre_sale_end_time: new BN(Date.now() / 1000 + 7200),
+            quantity: new BN(100),
+            buy_quantity: new BN(5),
         });
 
         let ix = new TransactionInstruction({
             keys: [
                 {
+                    pubkey: payer.publicKey,
+                    isSigner: true,
+                    isWritable: true,
+                },
+                {
                     pubkey: buyer.publicKey,
                     isSigner: true,
                     isWritable: true,
+                },
+                { pubkey: payer.publicKey, isSigner: true, isWritable: true },
+                {
+                    pubkey: recipientWallet.publicKey,
+                    isSigner: true,
+                    isWritable: true,
+                },
+                {
+                    pubkey: TOKEN_PROGRAM_ID.programId,
+                    isSigner: false,
+                    isWritable: false,
                 },
             ],
             programId: program.publicKey,
@@ -299,13 +377,15 @@ describe('Intitial Coin Offering!', () => {
 
         const ts = new Transaction().add(ix);
 
-        const sx = await sendAndConfirmTransaction(connection, ts, [
-            payer,
-            buyer,
-        ]).catch((err) => console.error('err', err));
+        const sx = await sendAndConfirmTransaction(
+            connection,
+            ts,
+            [payer, buyer, recipientWallet],
+            { skipPreflight: true }
+        ).catch((err) => console.error('err', err));
 
         console.log(`Tx Signature: ${sx}`);
     });
 });
 
-jest.setTimeout(30000);
+jest.setTimeout(3000);
